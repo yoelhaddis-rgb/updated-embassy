@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id               String        @id @default(cuid())
+  email            String        @unique
+  passwordHash     String
+  role             String        @default("CITIZEN") // CITIZEN | STAFF | ADMIN
+  firstName        String
+  lastName         String
+  dateOfBirth      String?
+  phone            String?
+  eritreanIdNumber String?
+  nationality      String?       @default("Eritrees")
+  address          String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  appointments     Appointment[]
+  documents        Document[]
+  familyMembers    FamilyMember[]
+}
+
+model FamilyMember {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName    String
+  lastName     String
+  dateOfBirth  String?
+  relationship String
+  createdAt    DateTime @default(now())
+}
+
+model Appointment {
+  id           String     @id @default(cuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  serviceId    String
+  serviceTitle String
+  date         String
+  timeSlot     String
+  status       String     @default("CONFIRMED")
+  notes        String?
+  persons      String     @default("1")
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  documents    Document[]
+}
+
+model Document {
+  id            String       @id @default(cuid())
+  userId        String
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appointmentId String?
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  filename      String
+  originalName  String
+  mimeType      String
+  size          Int
+  reusable      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+}

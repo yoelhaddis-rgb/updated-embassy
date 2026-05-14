@@ -1,0 +1,197 @@
+@import "tailwindcss";
+
+@theme {
+  --color-eritrea-blue: #1E5FA8;
+  --color-eritrea-blue-dark: #164A85;
+  --color-eritrea-blue-light: #3A7FCC;
+  --color-eritrea-green: #0E6B3A;
+  --color-eritrea-green-dark: #0A5430;
+  --color-eritrea-green-light: #15884A;
+  --color-eritrea-red: #B82D2D;
+  --color-eritrea-red-dark: #951F1F;
+  --color-eritrea-red-light: #D44444;
+  --color-eritrea-gold: #C99A3C;
+  --color-eritrea-gold-dark: #A67E2C;
+  --color-eritrea-gold-light: #E2B85C;
+  --color-navy: #06101F;
+  --color-navy-light: #0E1E36;
+  --color-navy-mid: #162B4D;
+  --color-ivory: #FDFBF7;
+  --color-parchment: #F5F0E8;
+  --color-stone: #E8E0D4;
+  --color-warm-gray: #7A706A;
+  --color-charcoal: #2A2520;
+
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Playfair Display', ui-serif, Georgia, serif;
+}
+
+/* ══════ BASE ══════ */
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    @apply antialiased;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Gold selection — soul detail #9 */
+  ::selection {
+    background: rgba(201, 154, 60, 0.2);
+    color: inherit;
+  }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+}
+
+@layer components {
+  /* ══════ THE SIGNATURE: ERITREAN GRADIENT LINE ══════
+     The DNA of the entire design. Green → blue → gold bloom → blue → red.
+     Appears between every section. 2px tall, 60% opacity.
+     Like Stripe's rainbow bar, but in Eritrean flag colors. */
+  .eritrea-line {
+    height: 2px;
+    background: linear-gradient(90deg,
+      #0E6B3A 0%,
+      #0E6B3A 28%,
+      #1E5FA8 42%,
+      #C99A3C 50%,
+      #1E5FA8 58%,
+      #B82D2D 72%,
+      #B82D2D 100%
+    );
+    opacity: 0.5;
+  }
+
+  /* ══════ FLAG BARS ══════ */
+  .flag-bar { @apply h-1 flex; }
+  .flag-bar > :nth-child(1) { @apply flex-1 bg-eritrea-green; }
+  .flag-bar > :nth-child(2) { @apply flex-1 bg-eritrea-blue; }
+  .flag-bar > :nth-child(3) { @apply flex-1 bg-eritrea-red; }
+
+  .flag-bar-thick { @apply h-[10px] flex; }
+  .flag-bar-thick > :nth-child(1) { @apply flex-1 bg-eritrea-green; }
+  .flag-bar-thick > :nth-child(2) { @apply flex-1 bg-eritrea-blue; }
+  .flag-bar-thick > :nth-child(3) { @apply flex-1 bg-eritrea-red; }
+
+  /* ══════ TEXTURES ══════ */
+  .noise::after {
+    content: ''; position: absolute; inset: 0;
+    opacity: 0.03; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ══════ GRADIENTS ══════ */
+  .gradient-eritrea {
+    background: linear-gradient(135deg, #1E5FA8 0%, #0E6B3A 50%, #B82D2D 100%);
+  }
+  .gradient-hero-dark {
+    background: linear-gradient(165deg, #06101F 0%, #0E1E36 30%, #162B4D 55%, #06101F 100%);
+  }
+
+  /* ══════ GLASS ══════ */
+  .glass {
+    @apply bg-white/90 backdrop-blur-xl shadow-xl;
+  }
+
+  /* ══════ STEP INDICATORS ══════ */
+  .step-indicator {
+    @apply w-11 h-11 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-200;
+  }
+  .step-active {
+    @apply bg-eritrea-blue text-white shadow-lg shadow-eritrea-blue/20 ring-4 ring-eritrea-blue/10;
+  }
+  .step-completed {
+    @apply bg-eritrea-green text-white;
+  }
+  .step-inactive {
+    @apply bg-parchment text-warm-gray;
+  }
+
+  /* ══════ FORMS ══════ */
+  .form-input {
+    @apply w-full px-4 py-3.5 rounded-lg bg-white text-charcoal
+    border border-stone
+    focus:outline-none focus:ring-2 focus:ring-eritrea-blue/20 focus:border-eritrea-blue
+    transition-all duration-200 placeholder:text-warm-gray/50 text-[15px];
+  }
+  .form-label {
+    @apply block text-sm font-medium text-charcoal mb-2;
+  }
+
+  /* ══════ BUTTONS — 8px radius, never pills ══════ */
+  .btn-primary {
+    @apply bg-eritrea-blue hover:bg-eritrea-blue-dark text-white font-medium
+    px-7 py-3.5 rounded-lg transition-all duration-200
+    active:scale-[0.97] hover:-translate-y-0.5;
+  }
+  .btn-secondary {
+    @apply bg-ivory hover:bg-parchment text-charcoal font-medium
+    px-7 py-3.5 rounded-lg border border-stone transition-all duration-200
+    active:scale-[0.97];
+  }
+  .btn-red {
+    @apply bg-eritrea-red hover:bg-eritrea-red-dark text-white font-medium
+    px-7 py-3.5 rounded-lg transition-all duration-200
+    active:scale-[0.97] hover:-translate-y-0.5;
+  }
+  .btn-green {
+    @apply bg-eritrea-green hover:bg-eritrea-green-dark text-white font-medium
+    px-7 py-3.5 rounded-lg transition-all duration-200
+    active:scale-[0.97] hover:-translate-y-0.5;
+  }
+  .btn-gold {
+    @apply text-charcoal font-medium px-7 py-3.5 rounded-lg transition-all duration-200
+    active:scale-[0.97] hover:-translate-y-0.5;
+    background: linear-gradient(135deg, #E2B85C 0%, #C99A3C 100%);
+  }
+  .btn-gold:hover { background: linear-gradient(135deg, #C99A3C 0%, #A67E2C 100%); color: white; }
+
+  /* ══════ CARDS — no borders, bg stepping ══════ */
+  .card-hover {
+    @apply rounded-2xl bg-white transition-all duration-200
+    hover:-translate-y-1 hover:shadow-xl hover:shadow-charcoal/5;
+  }
+
+  /* ══════ SECTION LABELS — engraved plate ══════ */
+  .section-label {
+    @apply inline-block px-4 py-1.5 rounded-full text-[11px] font-semibold tracking-[0.15em] uppercase;
+  }
+}
+
+/* ══════ ANIMATIONS ══════ */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 30%, rgba(255,255,255,0.06) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ══════ TIGRINYA ══════ */
+[lang="ti"] { font-family: 'Noto Sans Ethiopic', 'DM Sans', sans-serif; }
+[lang="ti"] .font-display { font-family: 'Noto Sans Ethiopic', 'Playfair Display', serif; }
+
+/* Slate warm background (ontdek-eritrea sectie) */
+.bg-slate-warm { background-color: #F8F5F0; }
+
+/* Cookie banner */
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up { animation: slide-up 0.4s ease-out; }
