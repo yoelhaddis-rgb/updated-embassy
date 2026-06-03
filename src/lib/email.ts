@@ -787,3 +787,94 @@ export async function sendAppointmentConfirmation(params: {
     return { success: false, error: message };
   }
 }
+
+export async function sendMorningDigest(params: {
+  to: string;
+  staffName: string;
+  date: string;           // "2026-06-04"
+  formattedDate: string;  // "woensdag 4 juni 2026"
+  appointments: Array<{
+    timeSlot: string;
+    serviceTitle: string;
+    userName: string;
+    phone: string | null;
+    walkIn: boolean;
+  }>;
+}): Promise<{ success: boolean; previewUrl?: string; error?: string }> {
+  try {
+    const transporter = await getTransporter();
+
+    const rowsHtml = params.appointments.map(appt => `
+      <tr>
+        <td style="padding:8px 12px;border-bottom:1px solid #e5dece;font-size:13px;font-weight:600;color:#2d5fa6;width:56px;">${appt.timeSlot}</td>
+        <td style="padding:8px 12px;border-bottom:1px solid #e5dece;font-size:13px;color:#2c2c2c;">
+          ${appt.walkIn ? `<em style="color:#8a8a8a;">Inloper${appt.phone ? ` · ${appt.phone}` : ""}</em>` : `${appt.userName}${appt.phone ? `<br/><span style="font-size:11px;color:#8a8a8a;">${appt.phone}</span>` : ""}`}
+        </td>
+        <td style="padding:8px 12px;border-bottom:1px solid #e5dece;font-size:12px;color:#5a5a5a;">${appt.serviceTitle}</td>
+      </tr>
+    `).join("");
+
+    const html = `<!DOCTYPE html>
+<html lang="nl">
+<head><meta charset="UTF-8"/><title>Dagschema ${params.formattedDate}</title></head>
+<body style="margin:0;padding:0;background:#f5f0e8;font-family:'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f0e8;padding:40px 0;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+        <tr>
+          <td style="background:#1a2744;border-radius:16px 16px 0 0;padding:28px 40px;">
+            <table width="80" cellpadding="0" cellspacing="0" style="margin:0 0 16px;">
+              <tr>
+                <td width="27" height="5" style="background:#4d9e4d;border-radius:2px 0 0 2px;"></td>
+                <td width="27" height="5" style="background:#2d5fa6;"></td>
+                <td width="27" height="5" style="background:#c0392b;border-radius:0 2px 2px 0;"></td>
+              </tr>
+            </table>
+            <h1 style="color:#ffffff;font-size:18px;font-weight:600;margin:0 0 4px;">Dagschema – ${params.formattedDate}</h1>
+            <p style="color:rgba(255,255,255,0.5);font-size:13px;margin:0;">${params.appointments.length} afspraken vandaag · Eritrese Ambassade Den Haag</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#ffffff;padding:0;">
+            <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+              <thead>
+                <tr style="background:#f9f5ed;">
+                  <th style="padding:8px 12px;text-align:left;font-size:11px;color:#8a8a8a;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid #e5dece;">Tijd</th>
+                  <th style="padding:8px 12px;text-align:left;font-size:11px;color:#8a8a8a;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid #e5dece;">Naam</th>
+                  <th style="padding:8px 12px;text-align:left;font-size:11px;color:#8a8a8a;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid #e5dece;">Dienst</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rowsHtml || `<tr><td colspan="3" style="padding:20px 12px;text-align:center;color:#8a8a8a;font-size:13px;">Geen afspraken vandaag.</td></tr>`}
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#f5f0e8;border-radius:0 0 16px 16px;padding:20px 40px;text-align:center;border-top:1px solid #e5dece;">
+            <p style="color:#aaa;font-size:12px;margin:0;">Eritrese Ambassade · Javastraat 58 · 2585 AR Den Haag</p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+    const info = await transporter.sendMail({
+      from: FROM_ADDRESS,
+      to: params.to,
+      subject: `Dagschema ${params.formattedDate} – ${params.appointments.length} afspraken`,
+      html,
+      text: `Dagschema ${params.formattedDate}\n\n${params.appointments.map(a => `${a.timeSlot}  ${a.walkIn ? "Inloper" : a.userName}  ${a.serviceTitle}`).join("\n")}\n\nEritrese Ambassade Den Haag`,
+    });
+
+    const previewUrl = nodemailer.getTestMessageUrl(info);
+    if (previewUrl) console.log("📧 Morning digest preview URL:", previewUrl);
+    return { success: true, previewUrl: previewUrl || undefined };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("❌ Morning digest email fout:", message);
+    return { success: false, error: message };
+  }
+}
