@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { CheckInButton } from "./CheckInButton";
 import { PrintButton } from "./PrintButton";
 import { WalkInForm } from "./WalkInForm";
+import { OverdueBadge } from "./OverdueBadge";
 
 export default async function DagschemaPage({
   searchParams,
@@ -105,6 +106,7 @@ export default async function DagschemaPage({
                   <tr key={appt.id} className={`${i % 2 === 0 ? "bg-white print:bg-white" : "bg-parchment/30 print:bg-gray-50"} ${appt.walkIn ? "border-l-4 border-eritrea-gold" : ""}`}>
                     <td className="px-4 py-4 print:py-3">
                       <span className="font-bold text-eritrea-blue print:text-gray-900 text-sm">{appt.timeSlot}</span>
+                      <OverdueBadge date={selectedDate} timeSlot={appt.timeSlot} status={appt.status} />
                     </td>
                     <td className="px-4 py-4 print:py-3">
                       <p className="font-semibold text-charcoal print:text-gray-900 text-sm flex items-center gap-2">
