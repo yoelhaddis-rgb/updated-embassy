@@ -61,6 +61,12 @@ export default function InloggenPage() {
               <LogIn size={18} />
               {loading ? "Bezig met inloggen..." : "Inloggen"}
             </button>
+
+            <div className="text-center mt-4">
+              <Link href="/wachtwoord-vergeten" className="text-sm text-eritrea-blue hover:underline">
+                Wachtwoord vergeten?
+              </Link>
+            </div>
           </form>
 
           {/* Demo accounts */}

@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CookieBanner from "@/components/CookieBanner";
 import EmergencyBanner from "@/components/EmergencyBanner";
+import { db } from "@/lib/db";
 
 export const metadata: Metadata = {
   title: "Eritrese Ambassade Den Haag | Ambassade van de Staat Eritrea",
@@ -18,11 +19,29 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+async function getBannerData() {
+  try {
+    const settings = await db.siteSetting.findMany({
+      where: { key: { in: ["banner_active", "banner_text", "banner_type"] } },
+    });
+    const map = Object.fromEntries(settings.map((s) => [s.key, s.value]));
+    return {
+      active: map.banner_active === "true",
+      text: map.banner_text ?? "",
+      type: (map.banner_type ?? "warning") as "warning" | "info" | "closed",
+    };
+  } catch {
+    return { active: false, text: "", type: "warning" as const };
+  }
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const banner = await getBannerData();
+
   return (
     <html lang="nl">
       <head>
@@ -39,7 +58,9 @@ export default function RootLayout({
           <div className="flag-bar-thick">
             <div /><div /><div />
           </div>
-          <EmergencyBanner />
+          {banner.active && banner.text && (
+            <EmergencyBanner text={banner.text} type={banner.type} />
+          )}
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
