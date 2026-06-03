@@ -22,9 +22,11 @@ model User {
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
-  appointments     Appointment[]
-  documents        Document[]
-  familyMembers    FamilyMember[]
+  appointments         Appointment[]
+  documents            Document[]
+  familyMembers        FamilyMember[]
+  taxPayments          TaxPayment[]
+  passwordResetTokens  PasswordResetToken[]
 }
 
 model FamilyMember {
@@ -42,13 +44,16 @@ model Appointment {
   id           String     @id @default(cuid())
   userId       String
   user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  serviceId    String
-  serviceTitle String
-  date         String
-  timeSlot     String
-  status       String     @default("CONFIRMED")
-  notes        String?
-  persons      String     @default("1")
+  serviceId     String
+  serviceTitle  String
+  date          String
+  timeSlot      String
+  status        String     @default("CONFIRMED")
+  paymentStatus String     @default("NONE") // NONE | PENDING | PAID | WAIVED
+  notes         String?
+  staffNotes    String?
+  walkIn        Boolean    @default(false)
+  persons       String     @default("1")
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 
@@ -66,5 +71,59 @@ model Document {
   mimeType      String
   size          Int
   reusable      Boolean      @default(true)
+  status        String       @default("PENDING") // PENDING | READY | REJECTED
+  statusNote    String?
   createdAt     DateTime     @default(now())
+}
+
+model TaxPayment {
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  year             Int
+  amountPaid       Float
+  currency         String   @default("EUR")
+  paidAt           DateTime @default(now())
+  paymentGroupId   String?  // groups multiple years from one payment session
+  registeredByName String?  // staff member name who registered
+  notes            String?
+  createdAt        DateTime @default(now())
+
+  @@unique([userId, year])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+}
+
+model NewsletterSubscriber {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  subscribedAt DateTime @default(now())
+}
+
+model NewsItem {
+  id          String   @id @default(cuid())
+  title       String
+  summary     String
+  content     String?
+  category    String   @default("Aankondiging")
+  imageUrl    String?
+  publishedAt DateTime @default(now())
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Key-value store for site-wide settings (banner, toggles, etc.)
+model SiteSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
 }
