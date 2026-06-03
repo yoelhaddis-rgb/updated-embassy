@@ -168,8 +168,6 @@ export async function rescheduleAppointmentAction(
   });
 
   if (user) {
-    const { sendAppointmentConfirmation } = await import("@/lib/email");
-    const { getServiceInfo } = await import("@/lib/services");
     const serviceInfo = getServiceInfo(appointment.serviceId);
     sendAppointmentConfirmation({
       to: user.email,
