@@ -15,6 +15,7 @@ export function StaffNotesInput({
   const [notes, setNotes] = useState(initialNotes ?? "");
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const ref = useRef<HTMLTextAreaElement>(null);
 
   const handleOpen = () => {
@@ -24,8 +25,13 @@ export function StaffNotesInput({
 
   const handleSave = async () => {
     setLoading(true);
-    await saveStaffNotesAction(appointmentId, notes);
+    setError(null);
+    const result = await saveStaffNotesAction(appointmentId, notes);
     setLoading(false);
+    if (result?.error) {
+      setError(result.error);
+      return;
+    }
     setSaved(true);
     setTimeout(() => {
       setSaved(false);
@@ -73,6 +79,7 @@ export function StaffNotesInput({
       >
         {loading ? <Loader2 size={11} className="animate-spin" /> : <Check size={11} />}
       </button>
+      {error && <p className="text-xs text-eritrea-red mt-1 w-full">{error}</p>}
     </div>
   );
 }
