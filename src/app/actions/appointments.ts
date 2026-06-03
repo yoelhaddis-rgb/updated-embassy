@@ -184,6 +184,21 @@ export async function createWalkInAction(data: {
   return { success: true };
 }
 
+export async function saveStaffNotesAction(appointmentId: string, notes: string) {
+  const session = await getSession();
+  if (!session || (session.role !== "STAFF" && session.role !== "ADMIN")) {
+    return { error: "Geen toegang." };
+  }
+
+  await db.appointment.update({
+    where: { id: appointmentId },
+    data: { staffNotes: notes || null },
+  });
+
+  revalidatePath("/admin/dagschema");
+  return { success: true };
+}
+
 export async function rescheduleAppointmentAction(
   appointmentId: string,
   newDate: string,

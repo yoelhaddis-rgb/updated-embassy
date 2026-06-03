@@ -5,6 +5,7 @@ import { CheckInButton } from "./CheckInButton";
 import { PrintButton } from "./PrintButton";
 import { WalkInForm } from "./WalkInForm";
 import { OverdueBadge } from "./OverdueBadge";
+import { StaffNotesInput } from "./StaffNotesInput";
 
 export default async function DagschemaPage({
   searchParams,
@@ -97,6 +98,7 @@ export default async function DagschemaPage({
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider w-20">Tijd</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider">Naam</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider">Dienst</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider no-print">Notities</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider hidden print:table-cell">Telefoon</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider w-24 print:w-32">Aanwezig</th>
                 </tr>
@@ -129,6 +131,12 @@ export default async function DagschemaPage({
                       {appt.notes && (
                         <p className="text-xs text-warm-gray print:text-gray-500 mt-0.5 italic">{appt.notes}</p>
                       )}
+                    </td>
+                    <td className="px-4 py-4 print:py-3 no-print">
+                      <StaffNotesInput
+                        appointmentId={appt.id}
+                        initialNotes={appt.staffNotes ?? null}
+                      />
                     </td>
                     <td className="px-4 py-4 print:py-3 hidden print:table-cell">
                       <p className="text-xs text-gray-700">{appt.user.phone ?? "–"}</p>
