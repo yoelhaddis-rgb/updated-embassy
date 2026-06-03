@@ -140,6 +140,50 @@ export async function updatePaymentStatusAction(
   return { success: true };
 }
 
+export async function createWalkInAction(data: {
+  serviceId: string;
+  serviceTitle: string;
+  date: string;
+  timeSlot: string;
+  notes?: string;
+}) {
+  const session = await getSession();
+  if (!session || (session.role !== "STAFF" && session.role !== "ADMIN")) {
+    return { error: "Geen toegang." };
+  }
+
+  // Find or create the system walk-in user
+  const WALKIN_EMAIL = "walkin@ambassade.internal";
+  let walkInUser = await db.user.findUnique({ where: { email: WALKIN_EMAIL } });
+  if (!walkInUser) {
+    walkInUser = await db.user.create({
+      data: {
+        email: WALKIN_EMAIL,
+        passwordHash: "SYSTEM_ACCOUNT_NO_LOGIN",
+        role: "CITIZEN",
+        firstName: "Inloper",
+        lastName: "",
+      },
+    });
+  }
+
+  await db.appointment.create({
+    data: {
+      userId: walkInUser.id,
+      serviceId: data.serviceId,
+      serviceTitle: data.serviceTitle,
+      date: data.date,
+      timeSlot: data.timeSlot,
+      notes: data.notes || null,
+      status: "CONFIRMED",
+      walkIn: true,
+    },
+  });
+
+  revalidatePath("/admin/dagschema");
+  return { success: true };
+}
+
 export async function rescheduleAppointmentAction(
   appointmentId: string,
   newDate: string,
