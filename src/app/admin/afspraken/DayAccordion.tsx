@@ -65,7 +65,7 @@ export function DayAccordion({
           .slice(0, 3)
           .map(a => `${a.user.firstName} ${a.user.lastName[0] ?? ""}.`);
         const walkInCount = group.appointments.filter(a => a.walkIn).length;
-        const extraCount = group.appointments.length - 3;
+        const extraCount = Math.max(0, group.appointments.length - previewNames.length - walkInCount);
 
         return (
           <div key={group.date} className="bg-white rounded-2xl ring-1 ring-stone/40 overflow-hidden">
