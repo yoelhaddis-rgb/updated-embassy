@@ -3,6 +3,8 @@
 import { db } from "@/lib/db";
 import { getSession } from "@/lib/session";
 import { revalidatePath } from "next/cache";
+import { sendAppointmentConfirmation, sendCancellationConfirmation } from "@/lib/email";
+import { getServiceInfo } from "@/lib/services";
 
 export async function createAppointmentAction(formData: FormData) {
   const session = await getSession();
@@ -39,6 +41,27 @@ export async function createAppointmentAction(formData: FormData) {
   });
 
   revalidatePath("/mijn-account");
+
+  // Fetch user email for confirmation
+  const user = await db.user.findUnique({
+    where: { id: session.id },
+    select: { email: true, firstName: true, lastName: true },
+  });
+
+  if (user) {
+    // Fire-and-forget: don't block the response on email sending
+    const serviceInfo = getServiceInfo(serviceId);
+    sendAppointmentConfirmation({
+      to: user.email,
+      firstName: user.firstName,
+      serviceTitle,
+      date,
+      timeSlot,
+      appointmentId: appointment.id,
+      requiredDocs: serviceInfo?.requiredDocs,
+    }).catch((err) => console.error("Email send failed:", err));
+  }
+
   return { success: true, appointmentId: appointment.id };
 }
 
@@ -54,11 +77,110 @@ export async function cancelAppointmentAction(appointmentId: string) {
   const session = await getSession();
   if (!session) return { error: "Niet ingelogd." };
 
-  await db.appointment.update({
+  const appointment = await db.appointment.update({
     where: { id: appointmentId, userId: session.id },
     data: { status: "CANCELLED" },
   });
 
   revalidatePath("/mijn-account");
+
+  // Send cancellation confirmation email
+  const user = await db.user.findUnique({
+    where: { id: session.id },
+    select: { email: true, firstName: true },
+  });
+
+  if (user) {
+    sendCancellationConfirmation({
+      to: user.email,
+      firstName: user.firstName,
+      serviceTitle: appointment.serviceTitle,
+      date: appointment.date,
+      timeSlot: appointment.timeSlot,
+    }).catch((err) => console.error("Cancel email failed:", err));
+  }
+
+  return { success: true };
+}
+
+export async function updateAppointmentStatusAction(
+  appointmentId: string,
+  status: "CONFIRMED" | "CANCELLED" | "ATTENDED" | "NO_SHOW"
+) {
+  const session = await getSession();
+  if (!session || (session.role !== "STAFF" && session.role !== "ADMIN")) {
+    return { error: "Geen toegang." };
+  }
+
+  await db.appointment.update({
+    where: { id: appointmentId },
+    data: { status },
+  });
+
+  revalidatePath("/admin/afspraken");
+  revalidatePath("/admin");
+  return { success: true };
+}
+
+export async function updatePaymentStatusAction(
+  appointmentId: string,
+  paymentStatus: "NONE" | "PENDING" | "PAID" | "WAIVED"
+) {
+  const session = await getSession();
+  if (!session || (session.role !== "STAFF" && session.role !== "ADMIN")) {
+    return { error: "Geen toegang." };
+  }
+
+  await db.appointment.update({
+    where: { id: appointmentId },
+    data: { paymentStatus },
+  });
+
+  revalidatePath("/admin/afspraken");
+  return { success: true };
+}
+
+export async function rescheduleAppointmentAction(
+  appointmentId: string,
+  newDate: string,
+  newTimeSlot: string
+) {
+  const session = await getSession();
+  if (!session) return { error: "Niet ingelogd." };
+
+  // Check if new slot is available
+  const existing = await db.appointment.findFirst({
+    where: { date: newDate, timeSlot: newTimeSlot, status: "CONFIRMED", NOT: { id: appointmentId } },
+  });
+  if (existing) return { error: "Dit tijdslot is al bezet. Kies een ander tijdstip." };
+
+  const appointment = await db.appointment.update({
+    where: { id: appointmentId, userId: session.id },
+    data: { date: newDate, timeSlot: newTimeSlot },
+  });
+
+  revalidatePath("/mijn-account");
+
+  // Send confirmation email for the new date
+  const user = await db.user.findUnique({
+    where: { id: session.id },
+    select: { email: true, firstName: true, lastName: true },
+  });
+
+  if (user) {
+    const { sendAppointmentConfirmation } = await import("@/lib/email");
+    const { getServiceInfo } = await import("@/lib/services");
+    const serviceInfo = getServiceInfo(appointment.serviceId);
+    sendAppointmentConfirmation({
+      to: user.email,
+      firstName: user.firstName,
+      serviceTitle: appointment.serviceTitle,
+      date: newDate,
+      timeSlot: newTimeSlot,
+      appointmentId: appointment.id,
+      requiredDocs: serviceInfo?.requiredDocs,
+    }).catch((err) => console.error("Reschedule email failed:", err));
+  }
+
   return { success: true };
 }
