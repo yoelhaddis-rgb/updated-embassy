@@ -5,8 +5,10 @@ import Link from "next/link";
 import { logoutAction } from "@/app/actions/auth";
 import {
   User, CalendarCheck, FileText, Users, LogOut,
-  Clock, CheckCircle, XCircle, ChevronRight, Plus,
+  Clock, CheckCircle, XCircle, ChevronRight, Plus, Banknote, Printer,
 } from "lucide-react";
+import { CancelAppointmentButton } from "@/components/CancelAppointmentButton";
+import { RescheduleButton } from "@/components/RescheduleButton";
 
 export default async function MijnAccountPage() {
   const session = await getSession();
@@ -18,6 +20,7 @@ export default async function MijnAccountPage() {
       appointments: { orderBy: { createdAt: "desc" }, take: 5 },
       documents: { orderBy: { createdAt: "desc" }, take: 5 },
       familyMembers: true,
+      taxPayments: { orderBy: { year: "desc" } },
     },
   });
 
@@ -32,6 +35,8 @@ export default async function MijnAccountPage() {
     const apptDate = new Date(a.date + "T" + a.timeSlot);
     return apptDate < new Date() || a.status !== "CONFIRMED";
   });
+
+  const readyDocuments = user.documents.filter(d => d.status === "READY");
 
   return (
     <div className="bg-ivory min-h-screen">
@@ -136,8 +141,60 @@ export default async function MijnAccountPage() {
           </div>
         </div>
 
-        {/* Right: Appointments */}
+        {/* Right: Tax + Appointments */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Ready documents callout */}
+          {readyDocuments.length > 0 && (
+            <div className="bg-eritrea-green/8 border border-eritrea-green/25 rounded-2xl p-4 flex items-center gap-3">
+              <CheckCircle size={18} className="shrink-0 text-eritrea-green" />
+              <div className="flex-1">
+                <p className="font-semibold text-charcoal text-sm">
+                  {readyDocuments.length === 1
+                    ? "1 document klaar voor ophaling"
+                    : `${readyDocuments.length} documenten klaar voor ophaling`}
+                </p>
+                <p className="text-xs text-warm-gray mt-0.5">
+                  Bezoek de ambassade ma–do 09:00–15:00 met een geldig identiteitsbewijs.
+                </p>
+              </div>
+              <Link href="/mijn-account/documenten" className="text-xs font-semibold text-eritrea-green hover:underline shrink-0">
+                Bekijken →
+              </Link>
+            </div>
+          )}
+
+          {/* 2% Belasting */}
+          {user.taxPayments.length > 0 && (
+            <div>
+              <h2 className="font-display font-medium text-charcoal text-lg mb-4 flex items-center gap-2">
+                <Banknote size={18} className="text-eritrea-gold-dark" />
+                2% Rehabilitatiebelasting
+              </h2>
+              <div className="bg-white rounded-2xl ring-1 ring-stone/40 divide-y divide-stone/30">
+                {user.taxPayments.map((payment) => (
+                  <div key={payment.id} className="flex items-center justify-between px-5 py-3.5">
+                    <div className="flex items-center gap-3">
+                      <CheckCircle size={15} className="text-eritrea-green shrink-0" />
+                      <span className="font-display font-semibold text-sm text-charcoal">{payment.year}</span>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-eritrea-green">
+                        € {payment.amountPaid.toFixed(2)}
+                      </p>
+                      <p className="text-xs text-warm-gray">
+                        {new Date(payment.paidAt).toLocaleDateString("nl-NL", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Upcoming */}
           <div>
             <div className="flex items-center justify-between mb-4">
@@ -175,6 +232,20 @@ export default async function MijnAccountPage() {
                           <CheckCircle size={12} /> Bevestigd
                         </span>
                       </div>
+                      <div className="flex items-center gap-3 mt-2 flex-wrap">
+                        <Link
+                          href={`/mijn-account/afspraken/${appt.id}`}
+                          className="flex items-center gap-1.5 text-xs text-eritrea-blue hover:underline font-medium"
+                        >
+                          <Printer size={12} /> Bevestiging afdrukken
+                        </Link>
+                      </div>
+                      <RescheduleButton
+                        appointmentId={appt.id}
+                        currentDate={appt.date}
+                        currentTimeSlot={appt.timeSlot}
+                      />
+                      <CancelAppointmentButton appointmentId={appt.id} />
                     </div>
                   </div>
                 ))}
