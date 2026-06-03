@@ -4,9 +4,9 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { logoutAction } from "@/app/actions/auth";
 import {
-  CalendarCheck, Users, FileText, Settings,
+  CalendarCheck, Users, Settings,
   Clock, CheckCircle, ChevronRight, LogOut,
-  BarChart3, UserCheck,
+  BarChart3, UserCheck, Newspaper, Printer, Megaphone,
 } from "lucide-react";
 
 export default async function AdminPage() {
@@ -181,8 +181,14 @@ export default async function AdminPage() {
               <div className="space-y-2">
                 {[
                   { href: "/admin/afspraken", icon: CalendarCheck, label: "Alle afspraken", color: "text-eritrea-blue" },
+                  { href: "/admin/statistieken", icon: BarChart3, label: "Statistieken", color: "text-eritrea-green" },
+                  { href: `/admin/dagschema?date=${today}`, icon: Printer, label: "Dagschema afdrukken", color: "text-eritrea-gold-dark" },
                   { href: "/admin/burgers", icon: Users, label: "Burgerdossiers", color: "text-eritrea-green" },
-                  ...(session.role === "ADMIN" ? [{ href: "/admin/medewerkers", icon: Settings, label: "Medewerkers beheren", color: "text-eritrea-red" }] : []),
+                  ...(session.role === "ADMIN" ? [
+                    { href: "/admin/nieuws", icon: Newspaper, label: "Nieuws beheren", color: "text-eritrea-blue" },
+                    { href: "/admin/medewerkers", icon: Settings, label: "Medewerkers beheren", color: "text-eritrea-red" },
+                    { href: "/admin/instellingen", icon: Megaphone, label: "Site-instellingen", color: "text-eritrea-gold-dark" },
+                  ] : []),
                 ].map(link => (
                   <Link key={link.href} href={link.href} className="flex items-center gap-3 p-4 bg-white rounded-xl ring-1 ring-stone/40 hover:-translate-y-0.5 transition-all">
                     <link.icon size={18} className={link.color} />
