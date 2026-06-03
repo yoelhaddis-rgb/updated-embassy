@@ -23,7 +23,7 @@ export default async function StatistiekenPage() {
   const session = await getSession();
   if (!session || (session.role !== "STAFF" && session.role !== "ADMIN")) redirect("/inloggen");
 
-  const eightWeeksAgo = getWeekStart(8);
+  const eightWeeksAgo = getWeekStart(7);
   const today = new Date().toISOString().split("T")[0];
 
   const recentAppointments = await db.appointment.findMany({
