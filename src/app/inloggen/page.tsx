@@ -3,11 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { loginAction } from "@/app/actions/auth";
-import { Mail, Lock, LogIn, AlertCircle } from "lucide-react";
+import { Mail, Lock, LogIn, AlertCircle, ChevronDown } from "lucide-react";
 
 export default function InloggenPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [devOpen, setDevOpen] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -69,20 +70,30 @@ export default function InloggenPage() {
             </div>
           </form>
 
-          {/* Demo accounts */}
+          {/* Dev accounts — collapsible */}
           <div className="mt-6 pt-6 border-t border-stone/50">
-            <p className="text-xs text-warm-gray/60 font-semibold uppercase tracking-wider mb-3">Demo accounts</p>
-            <div className="space-y-2 text-xs text-warm-gray">
-              <div className="bg-parchment/50 rounded-lg p-2.5 font-mono">
-                <span className="text-eritrea-blue font-semibold">Burger:</span> abraham@demo.nl / burger123
+            <button
+              type="button"
+              onClick={() => setDevOpen(o => !o)}
+              className="flex items-center gap-2 text-xs text-warm-gray/50 hover:text-warm-gray transition-colors w-full"
+            >
+              <span className="font-mono bg-stone/30 text-warm-gray/60 px-1.5 py-0.5 rounded text-[10px]">DEV</span>
+              <span>Demo accounts</span>
+              <ChevronDown size={12} className={`ml-auto transition-transform ${devOpen ? "rotate-180" : ""}`} />
+            </button>
+            {devOpen && (
+              <div className="mt-3 space-y-2 text-xs text-warm-gray">
+                <div className="bg-parchment/50 rounded-lg p-2.5 font-mono">
+                  <span className="text-eritrea-blue font-semibold">Burger:</span> abraham@demo.nl / burger123
+                </div>
+                <div className="bg-parchment/50 rounded-lg p-2.5 font-mono">
+                  <span className="text-eritrea-green font-semibold">Medewerker:</span> medewerker@eritreanembassy.nl / medewerker123
+                </div>
+                <div className="bg-parchment/50 rounded-lg p-2.5 font-mono">
+                  <span className="text-eritrea-red font-semibold">Admin:</span> admin@eritreanembassy.nl / admin123
+                </div>
               </div>
-              <div className="bg-parchment/50 rounded-lg p-2.5 font-mono">
-                <span className="text-eritrea-green font-semibold">Medewerker:</span> medewerker@eritreanembassy.nl / medewerker123
-              </div>
-              <div className="bg-parchment/50 rounded-lg p-2.5 font-mono">
-                <span className="text-eritrea-red font-semibold">Admin:</span> admin@eritreanembassy.nl / admin123
-              </div>
-            </div>
+            )}
           </div>
         </div>
 

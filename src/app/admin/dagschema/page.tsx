@@ -7,6 +7,8 @@ import { WalkInForm } from "./WalkInForm";
 import { OverdueBadge } from "./OverdueBadge";
 import { StaffNotesInput } from "./StaffNotesInput";
 
+export const dynamic = "force-dynamic";
+
 export default async function DagschemaPage({
   searchParams,
 }: {
@@ -18,8 +20,7 @@ export default async function DagschemaPage({
   }
 
   const { date } = await searchParams;
-  const today = new Date().toISOString().split("T")[0];
-  const selectedDate = date ?? today;
+  const selectedDate = date ?? getDefaultWorkday();
 
   const appointments = await db.appointment.findMany({
     where: { date: selectedDate, status: { in: ["CONFIRMED", "ATTENDED", "NO_SHOW"] } },
@@ -185,6 +186,15 @@ export default async function DagschemaPage({
       `}</style>
     </>
   );
+}
+
+function getDefaultWorkday(): string {
+  const d = new Date();
+  // If today is a working day (Mon–Thu), use today; otherwise jump to next workday
+  while (d.getDay() === 0 || d.getDay() === 5 || d.getDay() === 6) {
+    d.setDate(d.getDate() + 1);
+  }
+  return d.toISOString().split("T")[0];
 }
 
 function getPrevWorkday(dateStr: string): string {
