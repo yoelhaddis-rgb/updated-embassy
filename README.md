@@ -2,6 +2,8 @@
 
 A full-stack web app for managing embassy appointments, citizen documents, and daily front-desk operations. Self-initiated — built to understand and streamline a real administrative workflow, not assigned coursework. Currently in discussion with the embassy about potential real-world use; not yet officially deployed.
 
+**[→ View the project showcase](https://yoelhaddis-rgb.github.io/updated-embassy/)** (once GitHub Pages is enabled for this repo)
+
 ## Demo
 
 [▶ Watch the walkthrough video](docs/demo.mp4) — a recorded click-through of the citizen and admin flows.
