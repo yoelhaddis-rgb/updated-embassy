@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 
-const SECRET = new TextEncoder().encode(
-  process.env.SESSION_SECRET || "eritrean-embassy-super-secret-key-2026-demo-very-long-string"
-);
+if (!process.env.SESSION_SECRET) {
+  throw new Error("SESSION_SECRET is not set. Add it to your .env file.");
+}
+const SECRET = new TextEncoder().encode(process.env.SESSION_SECRET);
 
 const protectedRoutes = ["/mijn-account", "/admin"];
 const authRoutes = ["/inloggen", "/registreren"];

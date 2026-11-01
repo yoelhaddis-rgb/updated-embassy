@@ -1,9 +1,10 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
-const SECRET = new TextEncoder().encode(
-  process.env.SESSION_SECRET || "eritrean-embassy-super-secret-key-2026-demo-very-long-string"
-);
+if (!process.env.SESSION_SECRET) {
+  throw new Error("SESSION_SECRET is not set. Add it to your .env file.");
+}
+const SECRET = new TextEncoder().encode(process.env.SESSION_SECRET);
 
 const COOKIE_NAME = "embassy_session";
 
