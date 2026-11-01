@@ -43,3 +43,6 @@ next-env.d.ts
 *.db
 *.db-shm
 *.db-wal
+
+# user-uploaded documents (may contain real personal data)
+/public/uploads
