@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eritrese Ambassade — project showcase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme: dark;
+    --ink:#10141b; --ink-2:#171c25; --ink-3:#1e2530;
+    --parchment:#f4ead6;
+    --gold:#cda03c; --gold-soft:#e8cf8c;
+    --green:#3e7e5c; --red:#b14942; --blue:#2c4f80;
+    --fg:#f2eee2; --muted:#9a9686;
+    --rule: rgba(242,238,226,.12);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--ink); color:var(--fg);
+    font-family:"IBM Plex Sans",system-ui,sans-serif;
+    padding-left:max(16px, env(safe-area-inset-left,0px));
+    padding-right:max(16px, env(safe-area-inset-right,0px));
+    overflow-x:hidden;
+  }
+  h1,h2,h3{font-family:"Fraunces",Georgia,serif; margin:0; text-wrap:balance}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+  a{color:inherit}
+  img{max-width:100%}
+  .wrap{max-width:920px; margin:0 auto}
+
+  .hero{padding-block:72px 56px; position:relative}
+  .seal{
+    width:84px; height:84px; margin-bottom:28px;
+    animation: stamp .7s cubic-bezier(.2,1.6,.4,1) both;
+  }
+  @keyframes stamp{
+    0%{ transform: scale(2.4) rotate(-18deg); opacity:0 }
+    60%{ transform: scale(.94) rotate(3deg); opacity:1 }
+    100%{ transform: scale(1) rotate(-6deg); opacity:1 }
+  }
+  @media (prefers-reduced-motion: reduce){ .seal{ animation:none; transform:rotate(-6deg) } }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--gold-soft); border:1px solid var(--rule); border-radius:99px; padding:6px 13px 6px 11px;
+    margin-bottom:22px;
+  }
+  .eyebrow::before{content:""; width:6px; height:6px; border-radius:50%; background:var(--green)}
+  h1.headline{font-size:clamp(34px,6vw,58px); font-weight:600; line-height:1.07; max-width:14ch}
+  .headline em{font-style:italic; color:var(--gold-soft); font-weight:500}
+  .sub{font-size:16.5px; color:var(--muted); line-height:1.6; max-width:52ch; margin-top:20px}
+  .cta-row{display:flex; gap:12px; margin-top:32px; flex-wrap:wrap}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; font-size:14.5px; font-weight:600;
+    padding:13px 22px; border-radius:9px; text-decoration:none; border:1px solid transparent;
+  }
+  .btn.primary{background:var(--gold); color:#1b1506}
+  .btn.ghost{border-color:var(--rule); color:var(--fg)}
+
+  .stat-row{display:flex; gap:0; margin-top:52px; border-top:1px solid var(--rule); padding-top:22px; flex-wrap:wrap}
+  .stat{flex:1; min-width:120px; padding-right:20px}
+  .stat .n{font-family:"IBM Plex Mono",monospace; font-size:23px; font-weight:600; color:var(--gold-soft); font-variant-numeric:tabular-nums}
+  .stat .l{font-size:12px; color:var(--muted); margin-top:3px}
+
+  section{padding-block:48px}
+  .section-label{
+    font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:14px;
+  }
+  h2.section-title{font-size:clamp(22px,3.4vw,30px); font-weight:600; max-width:22ch; margin-bottom:28px}
+
+  .features{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  @media (max-width:620px){.features{grid-template-columns:1fr}}
+  .feat-card{
+    background:var(--ink-2); border:1px solid var(--rule); border-radius:14px; padding:22px 22px 24px;
+  }
+  .feat-card .tag{
+    font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--green); margin-bottom:10px; display:block;
+  }
+  .feat-card.admin .tag{color:var(--blue)}
+  .feat-card h3{font-size:17px; font-weight:600; margin-bottom:10px}
+  .feat-card ul{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:7px}
+  .feat-card li{font-size:13.6px; color:var(--muted); line-height:1.5; padding-left:16px; position:relative}
+  .feat-card li::before{content:"—"; position:absolute; left:0; color:var(--rule)}
+
+  .gallery{display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start}
+  @media (max-width:620px){.gallery{grid-template-columns:1fr}}
+  .frame{
+    background:var(--parchment); border-radius:14px; padding:10px 10px 14px; position:relative;
+  }
+  .frame .dot-row{display:flex; gap:5px; padding:4px 4px 10px}
+  .frame .dot-row span{width:7px; height:7px; border-radius:50%; background:#00000022}
+  .frame img{display:block; width:100%; border-radius:6px; border:1px solid #00000014}
+  .frame .cap{
+    font-family:"IBM Plex Mono",monospace; font-size:11px; color:#4a4435; margin-top:9px; padding:0 4px;
+  }
+
+  .stack-strip{display:flex; flex-wrap:wrap; gap:9px}
+  .chip{
+    font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--fg);
+    border:1px solid var(--rule); border-radius:7px; padding:8px 13px; background:var(--ink-2);
+  }
+
+  .story{
+    background:var(--ink-2); border:1px solid var(--rule); border-radius:16px; padding:30px 28px;
+    display:grid; grid-template-columns:auto 1fr; gap:22px; align-items:start;
+  }
+  @media (max-width:560px){.story{grid-template-columns:1fr}}
+  .story .mark{
+    width:46px; height:46px; border-radius:50%; background:var(--gold); color:#1b1506;
+    display:flex; align-items:center; justify-content:center; font-family:"Fraunces",serif; font-weight:700; font-size:19px;
+  }
+  .story p{font-size:14.5px; line-height:1.68; color:var(--muted); margin:0 0 12px}
+  .story p:last-child{margin-bottom:0}
+  .story strong{color:var(--fg); font-weight:600}
+
+  footer{padding-block:48px 64px; border-top:1px solid var(--rule); margin-top:12px}
+  .foot-row{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px}
+  .foot-row .name{font-family:"Fraunces",serif; font-size:17px}
+  .foot-links{display:flex; gap:18px; font-family:"IBM Plex Mono",monospace; font-size:12.5px}
+  .foot-links a{text-decoration:none; border-bottom:1px solid var(--rule); padding-bottom:2px}
+  .foot-note{font-size:12px; color:var(--muted); margin-top:18px; max-width:60ch; line-height:1.6}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="hero">
+    <svg class="seal" viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="46" stroke="var(--gold)" stroke-width="2.5"/>
+      <circle cx="50" cy="50" r="37" stroke="var(--gold)" stroke-width="1" stroke-dasharray="2 4"/>
+      <text x="50" y="47" text-anchor="middle" fill="var(--gold-soft)" font-family="IBM Plex Mono" font-size="9" letter-spacing="1">AFSPRAAK</text>
+      <text x="50" y="60" text-anchor="middle" fill="var(--gold-soft)" font-family="IBM Plex Mono" font-size="9" letter-spacing="1">BEVESTIGD</text>
+    </svg>
+
+    <span class="eyebrow">Zelf gebouwd · in gesprek met de ambassade</span>
+    <h1 class="headline">De ambassade had een wachtrij.<br>Nu heeft hij een <em>interface</em>.</h1>
+    <p class="sub">Een volledig systeem voor het boeken van afspraken, het uploaden van documenten en het runnen van de dagelijkse balie — van loket tot database, zelf ontworpen en gebouwd.</p>
+
+    <div class="cta-row">
+      <a class="btn primary" href="https://github.com/yoelhaddis-rgb/updated-embassy" target="_blank" rel="noopener">Bekijk de code →</a>
+      <a class="btn ghost" href="demo.mp4" target="_blank" rel="noopener">Bekijk de demo</a>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><div class="n">9</div><div class="l">datamodellen</div></div>
+      <div class="stat"><div class="n">~25</div><div class="l">routes, burger + admin</div></div>
+      <div class="stat"><div class="n">22</div><div class="l">commits</div></div>
+      <div class="stat"><div class="n">1</div><div class="l">bouwer</div></div>
+    </div>
+  </div>
+
+  <section>
+    <div class="section-label">Wat het doet</div>
+    <h2 class="section-title">Twee kanten van dezelfde balie</h2>
+    <div class="features">
+      <div class="feat-card">
+        <span class="tag">Burger</span>
+        <h3>Zelf een afspraak regelen</h3>
+        <ul>
+          <li>Account aanmaken en inloggen</li>
+          <li>Afspraak boeken, verzetten of annuleren</li>
+          <li>Documenten vooraf uploaden</li>
+          <li>Familieleden en belastingbetalingen bijhouden</li>
+        </ul>
+      </div>
+      <div class="feat-card admin">
+        <span class="tag">Medewerker</span>
+        <h3>De balie dagelijks runnen</h3>
+        <ul>
+          <li>Dagschema met live in-/uitchecken</li>
+          <li>Statistieken: drukte, no-shows, diensten</li>
+          <li>Burgers en collega's beheren</li>
+          <li>Automatische herinneringen via cron-jobs</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">In beeld</div>
+    <h2 class="section-title">Zoals het er echt uitziet</h2>
+    <div class="gallery">
+      <div class="frame">
+        <div class="dot-row"><span></span><span></span><span></span></div>
+        <img src="screenshots/home.png" alt="Landingspagina van de ambassade-site">
+        <div class="cap">/ home</div>
+      </div>
+      <div class="frame">
+        <div class="dot-row"><span></span><span></span><span></span></div>
+        <img src="screenshots/afspraak-wizard.png" alt="Afspraak-wizard voor burgers">
+        <div class="cap">/ afspraak-maken</div>
+      </div>
+      <div class="frame">
+        <div class="dot-row"><span></span><span></span><span></span></div>
+        <img src="screenshots/admin-dagschema.png" alt="Admin dagschema">
+        <div class="cap">/ admin/dagschema</div>
+      </div>
+      <div class="frame">
+        <div class="dot-row"><span></span><span></span><span></span></div>
+        <img src="screenshots/admin-statistieken.png" alt="Admin statistieken">
+        <div class="cap">/ admin/statistieken</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">Stack</div>
+    <h2 class="section-title">Hoe het gebouwd is</h2>
+    <div class="stack-strip">
+      <span class="chip">Next.js 16</span>
+      <span class="chip">React 19</span>
+      <span class="chip">TypeScript</span>
+      <span class="chip">Prisma</span>
+      <span class="chip">PostgreSQL</span>
+      <span class="chip">Tailwind CSS 4</span>
+      <span class="chip">JWT-sessies</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="story">
+      <div class="mark">Y</div>
+      <div>
+        <p><strong>Zelf geïnitieerd</strong>, niet uitbesteed en niet opgedragen — een 3e-jaars AI-student aan de VU Amsterdam die wilde weten of een overheidsbalie ook gewoon goed digitaal kon.</p>
+        <p>Op dit moment <strong>in gesprek met de Eritrese ambassade in Den Haag</strong> over echt gebruik. Nog niet officieel in productie — dit is het project zoals het nu is, niet zoals het ooit zou kunnen zijn.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="foot-row">
+      <span class="name">Eritrese Ambassade</span>
+      <div class="foot-links">
+        <a href="https://github.com/yoelhaddis-rgb/updated-embassy" target="_blank" rel="noopener">GitHub</a>
+        <a href="demo.mp4" target="_blank" rel="noopener">Demo</a>
+      </div>
+    </div>
+    <p class="foot-note">Gebouwd door Yoel Haddis. Deze pagina is een persoonlijke showcase, geen officiële publicatie van de Eritrese ambassade.</p>
+  </footer>
+
+</div>
+
+</body>
+</html>

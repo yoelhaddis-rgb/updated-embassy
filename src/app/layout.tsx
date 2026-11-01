@@ -11,6 +11,10 @@ export const metadata: Metadata = {
   title: "Eritrese Ambassade Den Haag | Ambassade van de Staat Eritrea",
   description:
     "Officiële website van de Eritrese Ambassade in Den Haag, Nederland. Consulaire diensten, visumaanvragen, afspraken en informatie over Eritrea.",
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+  },
   openGraph: {
     title: "Eritrese Ambassade Den Haag",
     description: "Officiële website van de Eritrese Ambassade in Den Haag, Nederland.",

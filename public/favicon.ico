@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Eritrean flag colors background circle -->
+  <circle cx="100" cy="100" r="95" fill="#1E5FA8" stroke="#C99A3C" stroke-width="6"/>
+  <!-- Green triangle (left) -->
+  <polygon points="10,100 100,10 100,100" fill="#0E6B3A" opacity="0.85"/>
+  <!-- Red triangle (bottom-left) -->
+  <polygon points="10,100 100,190 100,100" fill="#B82D2D" opacity="0.85"/>
+  <!-- Gold olive wreath circle -->
+  <circle cx="100" cy="100" r="38" fill="none" stroke="#C99A3C" stroke-width="4"/>
+  <!-- ER text -->
+  <text x="100" y="108" text-anchor="middle" fill="#C99A3C" font-size="22" font-family="serif" font-weight="bold">ER</text>
+  <!-- Stars -->
+  <text x="100" y="58" text-anchor="middle" fill="#C99A3C" font-size="14">★</text>
+  <text x="100" y="152" text-anchor="middle" fill="#C99A3C" font-size="14">★</text>
+  <text x="58" y="108" text-anchor="middle" fill="#C99A3C" font-size="14">★</text>
+  <text x="142" y="108" text-anchor="middle" fill="#C99A3C" font-size="14">★</text>
+</svg>
